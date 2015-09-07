@@ -1,3 +1,6 @@
 {
-  "extends": "@phated/iceddev/es5"
+  "extends": "@phated/iceddev/es5",
+  "rules": {
+    "no-console": 0
+  }
 }
