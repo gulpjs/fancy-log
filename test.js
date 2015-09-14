@@ -54,3 +54,49 @@ lab.describe('log()', function(){
     done();
   });
 });
+
+lab.describe('log.error()', function(){
+
+  var stderr_write = process.stderr.write;
+  var writtenValue = '';
+
+  function writeSpy(value) {
+    writtenValue += value;
+  }
+
+  lab.afterEach(function(done){
+    writtenValue = '';
+    done();
+  });
+
+  lab.it('should work i guess', function(done){
+    // Stub process.stderr.write
+    process.stderr.write = writeSpy;
+
+    log.error(1, 2, 3, 4, 'five');
+    var time = dateformat(new Date(), 'HH:MM:ss');
+    code.expect(writtenValue).equals('[' + chalk.grey(time) + '] 1 2 3 4 \'five\'\n');
+
+    // Restore process.stderr.write after test
+    process.stderr.write = stderr_write;
+
+    done();
+  });
+
+  lab.it('should accept formatting', function(done){
+     // Stub process.stderr.write
+    process.stderr.write = writeSpy;
+
+    log.error('%s %d %j', 'something', 0.1, {key: 'value'});
+    var time = dateformat(new Date(), 'HH:MM:ss');
+    code.expect(writtenValue).equals(
+      '[' + chalk.grey(time) + '] '+
+      'something 0.1 {\"key\":\"value\"}\n'
+    );
+
+    // Restore process.stderr.write after test
+    process.stderr.write = stderr_write;
+
+    done();
+  });
+});
