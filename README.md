@@ -10,13 +10,21 @@ var log = require('fancy-log');
 
 log('a message');
 // [16:27:02] a message
+
+log.error('oh no!');
+// [16:27:02] oh no!
 ```
 
 ## API
 
-### log(msg...)
+### `log(msg...)`
 
 Logs the message as if you called `console.log` but prefixes the output with the
+current time in HH:MM:ss format.
+
+### `log.error(msg...)`
+
+Logs ths message as if you called `console.error` but prefixes the output with the
 current time in HH:MM:ss format.
 
 ## License
