@@ -5,9 +5,23 @@
 var chalk = require('chalk');
 var dateformat = require('dateformat');
 
-module.exports = function(){
-  var time = '['+chalk.grey(dateformat(new Date(), 'HH:MM:ss'))+']';
+function getTimestamp(){
+  return '['+chalk.grey(dateformat(new Date(), 'HH:MM:ss'))+']';
+}
+
+function log(){
+  var time = getTimestamp();
   process.stdout.write(time + ' ');
   console.log.apply(console, arguments);
   return this;
-};
+}
+
+function error(){
+  var time = getTimestamp();
+  process.stderr.write(time + ' ');
+  console.error.apply(console, arguments);
+  return this;
+}
+
+module.exports = log;
+module.exports.error = error;
