@@ -1,6 +1,6 @@
 {
   "name": "fancy-log",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Log things, prefixed with a timestamp",
   "author": "Blaine Bublitz <blaine@iceddev.com> (http://iceddev.com)",
   "contributors": [],
