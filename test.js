@@ -5,7 +5,7 @@
 var lab = exports.lab = require('lab').script();
 var code = require('code');
 var chalk = require('chalk');
-var dateformat = require('dateformat');
+var timestamp = require('time-stamp');
 
 var log = require('./');
 
@@ -28,7 +28,7 @@ lab.describe('log()', function(){
     process.stdout.write = writeSpy;
 
     log(1, 2, 3, 4, 'five');
-    var time = dateformat(new Date(), 'HH:MM:ss');
+    var time = timestamp('HH:mm:ss');
     code.expect(writtenValue).equals('[' + chalk.grey(time) + '] 1 2 3 4 \'five\'\n');
 
     // Restore process.stdout.write after test
@@ -42,7 +42,7 @@ lab.describe('log()', function(){
     process.stdout.write = writeSpy;
 
     log('%s %d %j', 'something', 0.1, {key: 'value'});
-    var time = dateformat(new Date(), 'HH:MM:ss');
+    var time = timestamp('HH:mm:ss');
     code.expect(writtenValue).equals(
       '[' + chalk.grey(time) + '] '+
       'something 0.1 {\"key\":\"value\"}\n'
@@ -74,7 +74,7 @@ lab.describe('log.error()', function(){
     process.stderr.write = writeSpy;
 
     log.error(1, 2, 3, 4, 'five');
-    var time = dateformat(new Date(), 'HH:MM:ss');
+    var time = timestamp('HH:mm:ss');
     code.expect(writtenValue).equals('[' + chalk.grey(time) + '] 1 2 3 4 \'five\'\n');
 
     // Restore process.stderr.write after test
@@ -88,7 +88,7 @@ lab.describe('log.error()', function(){
     process.stderr.write = writeSpy;
 
     log.error('%s %d %j', 'something', 0.1, {key: 'value'});
-    var time = dateformat(new Date(), 'HH:MM:ss');
+    var time = timestamp('HH:mm:ss');
     code.expect(writtenValue).equals(
       '[' + chalk.grey(time) + '] '+
       'something 0.1 {\"key\":\"value\"}\n'
