@@ -23,5 +23,29 @@ function error(){
   return this;
 }
 
+function warn(){
+  var time = getTimestamp();
+  process.stdout.write(time + ' ');
+  console.warn.apply(console, arguments);
+  return this;
+}
+
+function info(){
+  var time = getTimestamp();
+  process.stdout.write(time + ' ');
+  console.info.apply(console, arguments);
+  return this;
+}
+
+function dir(){
+  var time = getTimestamp();
+  process.stdout.write(time + ' ');
+  console.dir.apply(console, arguments);
+  return this;
+}
+
 module.exports = log;
 module.exports.error = error;
+module.exports.warn = warn;
+module.exports.info = info;
+module.exports.dir = dir;
