@@ -4,7 +4,7 @@
   "description": "Log things, prefixed with a timestamp",
   "author": "Blaine Bublitz <blaine@iceddev.com> (http://iceddev.com)",
   "contributors": [
-    "Aman Mittal (http://amandeepmittal.github.io/)>"
+    "Aman Mittal (http://amandeepmittal.github.io/)"
   ],
   "repository": "phated/fancy-log",
   "license": "MIT",
