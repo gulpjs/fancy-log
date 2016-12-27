@@ -2,9 +2,11 @@
   "name": "fancy-log",
   "version": "1.2.0",
   "description": "Log things, prefixed with a timestamp",
-  "author": "Blaine Bublitz <blaine@iceddev.com> (http://iceddev.com)",
-  "contributors": [],
-  "repository": "phated/fancy-log",
+  "author": "Blaine Bublitz <blaine.bublitz@gmail.com>",
+  "contributors": [
+    "Aman Mittal (http://amandeepmittal.github.io/)"
+  ],
+  "repository": "js-cli/fancy-log",
   "license": "MIT",
   "engines": {
     "node": ">= 0.10"
