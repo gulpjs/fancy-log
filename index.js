@@ -49,3 +49,4 @@ module.exports.info = info;
 module.exports.dir = dir;
 module.exports.warn = warn;
 module.exports.error = error;
+module.exports.getTimestamp = getTimestamp;
