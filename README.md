@@ -23,28 +23,28 @@ log.error('oh no!');
 ### `log(msg...)`
 
 Logs the message as if you called `console.log` but prefixes the output with the
-current time in HH:MM:ss format.
+current time in HH:mm:ss format.
 
 ### `log.error(msg...)`
 
 Logs the message as if you called `console.error` but prefixes the output with the
-current time in HH:MM:ss format.
+current time in HH:mm:ss format.
 
 ### `log.warn(msg...)`
 
 Logs the message as if you called `console.warn` but prefixes the output with the
-current time in HH:MM:ss format.
+current time in HH:mm:ss format.
 
 
 ### `log.info(msg...)`
 
 Logs the message as if you called `console.info` but prefixes the output with the
-current time in HH:MM:ss format.
+current time in HH:mm:ss format.
 
 ### `log.dir(msg...)`
 
 Logs the message as if you called `console.dir` but prefixes the output with the
-current time in HH:MM:ss format.
+current time in HH:mm:ss format.
 
 ## License
 
