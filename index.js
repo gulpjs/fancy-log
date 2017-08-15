@@ -2,50 +2,20 @@
 /*
   Initial code from https://github.com/gulpjs/gulp-util/blob/v3.0.6/lib/log.js
  */
-var chalk = require('chalk');
+var grey = require('chalk').grey;
 var timestamp = require('time-stamp');
 
-function getTimestamp(){
-  return '['+chalk.grey(timestamp('HH:mm:ss'))+']';
-}
+var mappout = { log: 'stdout', info: 'stdout', dir: 'stdout', warn: 'stderr', error: 'stderr' };
 
-function log(){
-  var time = getTimestamp();
-  process.stdout.write(time + ' ');
-  console.log.apply(console, arguments);
+function _log(args, type){
+  var time = '['+grey(timestamp('HH:mm:ss'))+']';
+  process[mappout[type]].write(time + ' ');
+  console[type].apply(console, args);
   return this;
 }
 
-function info(){
-  var time = getTimestamp();
-  process.stdout.write(time + ' ');
-  console.info.apply(console, arguments);
-  return this;
-}
-
-function dir(){
-  var time = getTimestamp();
-  process.stdout.write(time + ' ');
-  console.dir.apply(console, arguments);
-  return this;
-}
-
-function warn(){
-  var time = getTimestamp();
-  process.stderr.write(time + ' ');
-  console.warn.apply(console, arguments);
-  return this;
-}
-
-function error(){
-  var time = getTimestamp();
-  process.stderr.write(time + ' ');
-  console.error.apply(console, arguments);
-  return this;
-}
-
-module.exports = log;
-module.exports.info = info;
-module.exports.dir = dir;
-module.exports.warn = warn;
-module.exports.error = error;
+module.exports = function(){ return _log(arguments, 'log'); };
+module.exports.info = function(){ return _log(arguments, 'info'); };
+module.exports.dir = function(){ return _log(arguments, 'dir'); };
+module.exports.warn = function(){ return _log(arguments, 'warn'); };
+module.exports.error = function(){ return _log(arguments, 'error'); };
