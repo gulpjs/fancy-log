@@ -4,7 +4,8 @@
   "description": "Log things, prefixed with a timestamp",
   "author": "Blaine Bublitz <blaine.bublitz@gmail.com>",
   "contributors": [
-    "Aman Mittal (http://amandeepmittal.github.io/)"
+    "Aman Mittal (http://amandeepmittal.github.io/)",
+    "Luis Miguel F. (https://github.com/lmfresneda/)"
   ],
   "repository": "js-cli/fancy-log",
   "license": "MIT",
