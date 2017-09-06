@@ -46,6 +46,10 @@ current time in HH:MM:ss format.
 Logs the message as if you called `console.dir` but prefixes the output with the
 current time in HH:MM:ss format.
 
+## Related
+
+- [fancy-format-log](https://github.com/LitoMore/fancy-format-log) - A fork version of fancy-log that can customize the timestamp format
+
 ## License
 
 MIT
