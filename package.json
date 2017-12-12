@@ -20,7 +20,7 @@
     "test": "lab -cvL test.js"
   },
   "dependencies": {
-    "chalk": "^1.1.1",
+    "ansi-gray": "^0.1.1",
     "time-stamp": "^1.0.0"
   },
   "devDependencies": {
