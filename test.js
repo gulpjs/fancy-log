@@ -6,7 +6,7 @@ var util = require('util');
 
 var lab = exports.lab = require('lab').script();
 var code = require('code');
-var chalk = require('chalk');
+var gray = require('ansi-gray');
 var timestamp = require('time-stamp');
 
 var log = require('./');
@@ -31,7 +31,7 @@ lab.describe('log()', function(){
 
     log(1, 2, 3, 4, 'five');
     var time = timestamp('HH:mm:ss');
-    code.expect(writtenValue).equals('[' + chalk.grey(time) + '] 1 2 3 4 \'five\'\n');
+    code.expect(writtenValue).equals('[' + gray(time) + '] 1 2 3 4 \'five\'\n');
 
     // Restore process.stdout.write after test
     process.stdout.write = stdout_write;
@@ -46,7 +46,7 @@ lab.describe('log()', function(){
     log('%s %d %j', 'something', 0.1, {key: 'value'});
     var time = timestamp('HH:mm:ss');
     code.expect(writtenValue).equals(
-      '[' + chalk.grey(time) + '] '+
+      '[' + gray(time) + '] '+
       'something 0.1 {\"key\":\"value\"}\n'
     );
 
@@ -77,7 +77,7 @@ lab.describe('log.info()', function(){
 
     log.info(1, 2, 3, 4, 'five');
     var time = timestamp('HH:mm:ss');
-    code.expect(writtenValue).equals('[' + chalk.grey(time) + '] 1 2 3 4 \'five\'\n');
+    code.expect(writtenValue).equals('[' + gray(time) + '] 1 2 3 4 \'five\'\n');
 
     // Restore process.stdout.write after test
     process.stdout.write = stdout_write;
@@ -92,7 +92,7 @@ lab.describe('log.info()', function(){
     log.info('%s %d %j', 'something', 0.1, {key: 'value'});
     var time = timestamp('HH:mm:ss');
     code.expect(writtenValue).equals(
-      '[' + chalk.grey(time) + '] '+
+      '[' + gray(time) + '] '+
       'something 0.1 {\"key\":\"value\"}\n'
     );
 
@@ -124,7 +124,7 @@ lab.describe('log.dir()', function(){
     log.dir({key: 'value'});
     var time = timestamp('HH:mm:ss');
     code.expect(writtenValue).equals(
-      '[' + chalk.grey(time) + '] '+
+      '[' + gray(time) + '] '+
       util.inspect({key:'value'}) + '\n'
     );
 
@@ -155,7 +155,7 @@ lab.describe('log.warn()', function(){
 
     log.warn(1, 2, 3, 4, 'five');
     var time = timestamp('HH:mm:ss');
-    code.expect(writtenValue).equals('[' + chalk.grey(time) + '] 1 2 3 4 \'five\'\n');
+    code.expect(writtenValue).equals('[' + gray(time) + '] 1 2 3 4 \'five\'\n');
 
     // Restore process.stderr.write after test
     process.stderr.write = stderr_write;
@@ -170,7 +170,7 @@ lab.describe('log.warn()', function(){
     log.warn('%s %d %j', 'something', 0.1, {key: 'value'});
     var time = timestamp('HH:mm:ss');
     code.expect(writtenValue).equals(
-      '[' + chalk.grey(time) + '] '+
+      '[' + gray(time) + '] '+
       'something 0.1 {\"key\":\"value\"}\n'
     );
 
@@ -201,7 +201,7 @@ lab.describe('log.error()', function(){
 
     log.error(1, 2, 3, 4, 'five');
     var time = timestamp('HH:mm:ss');
-    code.expect(writtenValue).equals('[' + chalk.grey(time) + '] 1 2 3 4 \'five\'\n');
+    code.expect(writtenValue).equals('[' + gray(time) + '] 1 2 3 4 \'five\'\n');
 
     // Restore process.stderr.write after test
     process.stderr.write = stderr_write;
@@ -216,7 +216,7 @@ lab.describe('log.error()', function(){
     log.error('%s %d %j', 'something', 0.1, {key: 'value'});
     var time = timestamp('HH:mm:ss');
     code.expect(writtenValue).equals(
-      '[' + chalk.grey(time) + '] '+
+      '[' + gray(time) + '] '+
       'something 0.1 {\"key\":\"value\"}\n'
     );
 
