@@ -13,6 +13,8 @@ var log = require('./');
 
 lab.describe('log()', function(){
 
+  var term = process.env.TERM;
+  var colorterm = process.env.COLORTERM;
   var stdout_write = process.stdout.write;
   var writtenValue = '';
 
@@ -52,6 +54,62 @@ lab.describe('log()', function(){
 
     // Restore process.stdout.write after test
     process.stdout.write = stdout_write;
+
+    done();
+  });
+
+  lab.it('does not add color if argv contains --no-color', function(done) {
+    // Stub process.stdout.write
+    process.stdout.write = writeSpy;
+
+    process.argv.push('--no-color');
+
+    log(1, 2, 3, 4, 'five');
+    var time = timestamp('HH:mm:ss');
+    code.expect(writtenValue).equals('[' + time + '] 1 2 3 4 \'five\'\n');
+
+    // Restore process.stdout.write after test
+    process.stdout.write = stdout_write;
+
+    process.argv.pop();
+
+    done();
+  });
+
+  lab.it('adds color if argv contains --color', function(done) {
+    // Stub process.stdout.write
+    process.stdout.write = writeSpy;
+
+    process.argv.push('--color');
+
+    log(1, 2, 3, 4, 'five');
+    var time = timestamp('HH:mm:ss');
+    code.expect(writtenValue).equals('[' + gray(time) + '] 1 2 3 4 \'five\'\n');
+
+    // Restore process.stdout.write after test
+    process.stdout.write = stdout_write;
+
+    process.argv.pop();
+
+    done();
+  });
+
+  lab.it('does not add color if no support', function(done) {
+    // Stub process.stdout.write
+    process.stdout.write = writeSpy;
+
+    process.env.TERM = 'dumb';
+    delete process.env.COLORTERM;
+
+    log(1, 2, 3, 4, 'five');
+    var time = timestamp('HH:mm:ss');
+    code.expect(writtenValue).equals('[' + time + '] 1 2 3 4 \'five\'\n');
+
+    // Restore process.stdout.write after test
+    process.stdout.write = stdout_write;
+
+    process.env.TERM = term;
+    process.env.COLORTERM = colorterm;
 
     done();
   });
