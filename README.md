@@ -41,6 +41,10 @@ current time in HH:MM:ss format.
 Logs the message as if you called `console.info` but prefixes the output with the
 current time in HH:MM:ss format.
 
+### `log.log(msg...)`
+
+Alias for [`log(msg...)`](#logmsg).
+
 ### `log.dir(msg...)`
 
 Logs the message as if you called `console.dir` but prefixes the output with the

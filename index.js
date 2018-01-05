@@ -66,6 +66,7 @@ function error(){
 }
 
 module.exports = log;
+module.exports.log = log;
 module.exports.info = info;
 module.exports.dir = dir;
 module.exports.warn = warn;
