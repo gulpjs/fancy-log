@@ -1,8 +1,23 @@
 'use strict';
 
+var Console = require('console').Console;
 var gray = require('ansi-gray');
 var timestamp = require('time-stamp');
 var supportsColor = require('color-support');
+var nodeVersion = require('parse-node-version')(process.version);
+
+// Needed to add this because node 10 decided to start coloring log output randomly
+var console;
+if (nodeVersion.major >= 10) {
+  // Node 10 also changed the way this is constructed
+  console = new Console({
+    stdout: process.stdout,
+    stderr: process.stderr,
+    colorMode: false,
+  });
+} else {
+  console = new Console(process.stdout, process.stderr);
+}
 
 function hasFlag(flag) {
   return (process.argv.indexOf('--' + flag) !== -1);
