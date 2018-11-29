@@ -1,5 +1,5 @@
 {
-  "extends": "@phated/iceddev/es5",
+  "extends": "gulp",
   "rules": {
     "no-console": 0
   }

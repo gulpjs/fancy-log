@@ -1,7 +1,5 @@
 'use strict';
-/*
-  Initial code from https://github.com/gulpjs/gulp-util/blob/v3.0.6/lib/log.js
- */
+
 var gray = require('ansi-gray');
 var timestamp = require('time-stamp');
 var supportsColor = require('color-support');
@@ -26,39 +24,39 @@ function addColor(str) {
   return str;
 }
 
-function getTimestamp(){
-  return '['+addColor(timestamp('HH:mm:ss'))+']';
+function getTimestamp() {
+  return '[' + addColor(timestamp('HH:mm:ss')) + ']';
 }
 
-function log(){
+function log() {
   var time = getTimestamp();
   process.stdout.write(time + ' ');
   console.log.apply(console, arguments);
   return this;
 }
 
-function info(){
+function info() {
   var time = getTimestamp();
   process.stdout.write(time + ' ');
   console.info.apply(console, arguments);
   return this;
 }
 
-function dir(){
+function dir() {
   var time = getTimestamp();
   process.stdout.write(time + ' ');
   console.dir.apply(console, arguments);
   return this;
 }
 
-function warn(){
+function warn() {
   var time = getTimestamp();
   process.stderr.write(time + ' ');
   console.warn.apply(console, arguments);
   return this;
 }
 
-function error(){
+function error() {
   var time = getTimestamp();
   process.stderr.write(time + ' ');
   console.error.apply(console, arguments);
