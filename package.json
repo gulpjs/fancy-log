@@ -1,6 +1,6 @@
 {
   "name": "fancy-log",
-  "version": "1.3.2",
+  "version": "1.3.3",
   "description": "Log things, prefixed with a timestamp.",
   "author": "Gulp Team <team@gulpjs.com> (http://gulpjs.com/)",
   "contributors": [
