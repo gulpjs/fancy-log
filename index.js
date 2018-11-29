@@ -6,6 +6,13 @@ var timestamp = require('time-stamp');
 var supportsColor = require('color-support');
 var nodeVersion = require('parse-node-version')(process.version);
 
+var colorDetectionOptions = {
+  // If on Windows, ignore the isTTY check
+  // This is due to AppVeyor (and thus probably common Windows platforms?) failing the check
+  // TODO: If this is too broad, we can reduce it to an APPVEYOR env check
+  ignoreTTY: (process.platform === 'win32'),
+};
+
 // Needed to add this because node 10 decided to start coloring log output randomly
 var console;
 if (nodeVersion.major >= 10) {
@@ -32,7 +39,7 @@ function addColor(str) {
     return gray(str);
   }
 
-  if (supportsColor()) {
+  if (supportsColor(colorDetectionOptions)) {
     return gray(str);
   }
 
