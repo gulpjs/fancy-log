@@ -5,6 +5,7 @@ var gray = require('ansi-gray');
 var timestamp = require('time-stamp');
 var supportsColor = require('color-support');
 var nodeVersion = require('parse-node-version')(process.version);
+var themingLog = require('theming-log');
 
 var colorDetectionOptions = {
   // If on Windows, ignore the isTTY check
@@ -17,6 +18,7 @@ var colorDetectionOptions = {
 // Needed to add this because node 10 decided to start coloring log output
 // randomly
 var console;
+/* istanbul ignore else */
 if (nodeVersion.major >= 10) {
   // Node 10 also changed the way this is constructed
   console = new Console({
@@ -49,43 +51,58 @@ function addColor(str) {
 }
 
 function getTimestamp() {
-  return '[' + addColor(timestamp('HH:mm:ss')) + ']';
+  return themingLog.format(log.theme, '{TIMESTAMP.FORMAT}');
 }
 
 function log() {
   var time = getTimestamp();
-  process.stdout.write(time + ' ');
+  process.stdout.write(time);
   console.log.apply(console, arguments);
   return this;
 }
 
+Object.defineProperty(log, 'theme', {
+  value: {
+    NOW: timestamp,
+    TIMESTAMP: {
+      COLOR: addColor,
+      FORMAT: '[{TIMESTAMP.COLOR: {NOW: HH:mm:ss}}] ',
+    },
+  },
+});
+
 function info() {
   var time = getTimestamp();
-  process.stdout.write(time + ' ');
+  process.stdout.write(time);
   console.info.apply(console, arguments);
   return this;
 }
 
 function dir() {
   var time = getTimestamp();
-  process.stdout.write(time + ' ');
+  process.stdout.write(time);
   console.dir.apply(console, arguments);
   return this;
 }
 
 function warn() {
   var time = getTimestamp();
-  process.stderr.write(time + ' ');
+  process.stderr.write(time);
   console.warn.apply(console, arguments);
   return this;
 }
 
 function error() {
   var time = getTimestamp();
-  process.stderr.write(time + ' ');
+  process.stderr.write(time);
   console.error.apply(console, arguments);
   return this;
 }
+
+log.themed = themingLog(log.theme, log, true);
+info.themed = themingLog(log.theme, info, true);
+warn.themed = themingLog(log.theme, warn, true);
+error.themed = themingLog(log.theme, error, true);
 
 module.exports = log;
 module.exports.info = info;
