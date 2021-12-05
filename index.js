@@ -4,27 +4,12 @@ var Console = require('console').Console;
 var gray = require('ansi-gray');
 var timestamp = require('time-stamp');
 var supportsColor = require('color-support');
-var nodeVersion = require('parse-node-version')(process.version);
 
-var colorDetectionOptions = {
-  // If on Windows, ignore the isTTY check
-  // This is due to AppVeyor (and thus probably common Windows platforms?) failing the check
-  // TODO: If this is too broad, we can reduce it to an APPVEYOR env check
-  ignoreTTY: (process.platform === 'win32'),
-};
-
-// Needed to add this because node 10 decided to start coloring log output randomly
-var console;
-if (nodeVersion.major >= 10) {
-  // Node 10 also changed the way this is constructed
-  console = new Console({
-    stdout: process.stdout,
-    stderr: process.stderr,
-    colorMode: false,
-  });
-} else {
-  console = new Console(process.stdout, process.stderr);
-}
+var console = new Console({
+  stdout: process.stdout,
+  stderr: process.stderr,
+  colorMode: false,
+});
 
 function hasFlag(flag) {
   return (process.argv.indexOf('--' + flag) !== -1);
@@ -39,7 +24,7 @@ function addColor(str) {
     return gray(str);
   }
 
-  if (supportsColor(colorDetectionOptions)) {
+  if (supportsColor()) {
     return gray(str);
   }
 

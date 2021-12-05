@@ -1,15 +1,28 @@
 'use strict';
 
+// Enable color as a normal terminal even on CI environment.
+if (process.env.CI) {
+  process.stdout.isTTY = true;
+  process.env.CI = '';
+  process.env.COLORTERM = true;
+}
+
+// Node.js >=v12 removes escaped quotes in inspect string by:
+// https://github.com/nodejs/node/pull/21624
+var nodeVersion = require('parse-node-version')(process.version);
+var isLessThanNode12 = (nodeVersion.major < 12);
+
 var util = require('util');
 
 var expect = require('expect');
+var sinon = require('sinon');
 var gray = require('ansi-gray');
 var timestamp = require('time-stamp');
 
 var log = require('../');
 
-var stdoutSpy = expect.spyOn(process.stdout, 'write').andCallThrough();
-var stderrSpy = expect.spyOn(process.stderr, 'write').andCallThrough();
+var stdoutSpy = sinon.spy(process.stdout, 'write');
+var stderrSpy = sinon.spy(process.stderr, 'write');
 
 describe('log()', function() {
 
@@ -17,15 +30,19 @@ describe('log()', function() {
   var colorterm = process.env.COLORTERM;
 
   beforeEach(function(done) {
-    stdoutSpy.reset();
+    stdoutSpy.resetHistory();
     done();
   });
 
   it('should work i guess', function(done) {
     log(1, 2, 3, 4, 'five');
     var time = timestamp('HH:mm:ss');
-    expect(stdoutSpy.calls[0].arguments).toInclude('[' + gray(time) + '] ');
-    expect(stdoutSpy.calls[1].arguments).toInclude('1 2 3 4 \'five\'\n');
+    expect(stdoutSpy.args[0][0]).toEqual('[' + gray(time) + '] ');
+    if (isLessThanNode12) {
+      expect(stdoutSpy.args[1][0]).toEqual('1 2 3 4 \'five\'\n');
+    } else {
+      expect(stdoutSpy.args[1][0]).toEqual('1 2 3 4 five\n');
+    }
 
     done();
   });
@@ -33,8 +50,8 @@ describe('log()', function() {
   it('should accept formatting', function(done) {
     log('%s %d %j', 'something', 0.1, { key: 'value' });
     var time = timestamp('HH:mm:ss');
-    expect(stdoutSpy.calls[0].arguments).toInclude('[' + gray(time) + '] ');
-    expect(stdoutSpy.calls[1].arguments).toInclude('something 0.1 {\"key\":\"value\"}\n');
+    expect(stdoutSpy.args[0][0]).toEqual('[' + gray(time) + '] ');
+    expect(stdoutSpy.args[1][0]).toEqual('something 0.1 {"key":"value"}\n');
 
     done();
   });
@@ -44,8 +61,12 @@ describe('log()', function() {
 
     log(1, 2, 3, 4, 'five');
     var time = timestamp('HH:mm:ss');
-    expect(stdoutSpy.calls[0].arguments).toInclude('[' + time + '] ');
-    expect(stdoutSpy.calls[1].arguments).toInclude('1 2 3 4 \'five\'\n');
+    expect(stdoutSpy.args[0][0]).toEqual('[' + time + '] ');
+    if (isLessThanNode12) {
+      expect(stdoutSpy.args[1][0]).toEqual('1 2 3 4 \'five\'\n');
+    } else {
+      expect(stdoutSpy.args[1][0]).toEqual('1 2 3 4 five\n');
+    }
 
     process.argv.pop();
 
@@ -57,8 +78,12 @@ describe('log()', function() {
 
     log(1, 2, 3, 4, 'five');
     var time = timestamp('HH:mm:ss');
-    expect(stdoutSpy.calls[0].arguments).toInclude('[' + gray(time) + '] ');
-    expect(stdoutSpy.calls[1].arguments).toInclude('1 2 3 4 \'five\'\n');
+    expect(stdoutSpy.args[0][0]).toEqual('[' + gray(time) + '] ');
+    if (isLessThanNode12) {
+      expect(stdoutSpy.args[1][0]).toEqual('1 2 3 4 \'five\'\n');
+    } else {
+      expect(stdoutSpy.args[1][0]).toEqual('1 2 3 4 five\n');
+    }
 
     process.argv.pop();
 
@@ -71,8 +96,12 @@ describe('log()', function() {
 
     log(1, 2, 3, 4, 'five');
     var time = timestamp('HH:mm:ss');
-    expect(stdoutSpy.calls[0].arguments).toInclude('[' + time + '] ');
-    expect(stdoutSpy.calls[1].arguments).toInclude('1 2 3 4 \'five\'\n');
+    expect(stdoutSpy.args[0][0]).toEqual('[' + time + '] ');
+    if (isLessThanNode12) {
+      expect(stdoutSpy.args[1][0]).toEqual('1 2 3 4 \'five\'\n');
+    } else {
+      expect(stdoutSpy.args[1][0]).toEqual('1 2 3 4 five\n');
+    }
 
     process.env.TERM = term;
     process.env.COLORTERM = colorterm;
@@ -84,15 +113,19 @@ describe('log()', function() {
 describe('log.info()', function() {
 
   beforeEach(function(done) {
-    stdoutSpy.reset();
+    stdoutSpy.resetHistory();
     done();
   });
 
   it('should work i guess', function(done) {
     log.info(1, 2, 3, 4, 'five');
     var time = timestamp('HH:mm:ss');
-    expect(stdoutSpy.calls[0].arguments).toInclude('[' + gray(time) + '] ');
-    expect(stdoutSpy.calls[1].arguments).toInclude('1 2 3 4 \'five\'\n');
+    expect(stdoutSpy.args[0][0]).toEqual('[' + gray(time) + '] ');
+    if (isLessThanNode12) {
+      expect(stdoutSpy.args[1][0]).toEqual('1 2 3 4 \'five\'\n');
+    } else {
+      expect(stdoutSpy.args[1][0]).toEqual('1 2 3 4 five\n');
+    }
 
     done();
   });
@@ -100,8 +133,8 @@ describe('log.info()', function() {
   it('should accept formatting', function(done) {
     log.info('%s %d %j', 'something', 0.1, { key: 'value' });
     var time = timestamp('HH:mm:ss');
-    expect(stdoutSpy.calls[0].arguments).toInclude('[' + gray(time) + '] ');
-    expect(stdoutSpy.calls[1].arguments).toInclude('something 0.1 {\"key\":\"value\"}\n');
+    expect(stdoutSpy.args[0][0]).toEqual('[' + gray(time) + '] ');
+    expect(stdoutSpy.args[1][0]).toEqual('something 0.1 {"key":"value"}\n');
 
     done();
   });
@@ -110,15 +143,15 @@ describe('log.info()', function() {
 describe('log.dir()', function() {
 
   beforeEach(function(done) {
-    stdoutSpy.reset();
+    stdoutSpy.resetHistory();
     done();
   });
 
   it('should format an object with util.inspect', function(done) {
     log.dir({ key: 'value' });
     var time = timestamp('HH:mm:ss');
-    expect(stdoutSpy.calls[0].arguments).toInclude('[' + gray(time) + '] ');
-    expect(stdoutSpy.calls[1].arguments).toInclude(util.inspect({ key: 'value' }) + '\n');
+    expect(stdoutSpy.args[0][0]).toEqual('[' + gray(time) + '] ');
+    expect(stdoutSpy.args[1][0]).toEqual(util.inspect({ key: 'value' }) + '\n');
 
     done();
   });
@@ -127,15 +160,19 @@ describe('log.dir()', function() {
 describe('log.warn()', function() {
 
   beforeEach(function(done) {
-    stderrSpy.reset();
+    stderrSpy.resetHistory();
     done();
   });
 
   it('should work i guess', function(done) {
     log.warn(1, 2, 3, 4, 'five');
     var time = timestamp('HH:mm:ss');
-    expect(stderrSpy.calls[0].arguments).toInclude('[' + gray(time) + '] ');
-    expect(stderrSpy.calls[1].arguments).toInclude('1 2 3 4 \'five\'\n');
+    expect(stderrSpy.args[0][0]).toEqual('[' + gray(time) + '] ');
+    if (isLessThanNode12) {
+      expect(stderrSpy.args[1][0]).toEqual('1 2 3 4 \'five\'\n');
+    } else {
+      expect(stderrSpy.args[1][0]).toEqual('1 2 3 4 five\n');
+    }
 
     done();
   });
@@ -143,8 +180,8 @@ describe('log.warn()', function() {
   it('should accept formatting', function(done) {
     log.warn('%s %d %j', 'something', 0.1, { key: 'value' });
     var time = timestamp('HH:mm:ss');
-    expect(stderrSpy.calls[0].arguments).toInclude('[' + gray(time) + '] ');
-    expect(stderrSpy.calls[1].arguments).toInclude('something 0.1 {\"key\":\"value\"}\n');
+    expect(stderrSpy.args[0][0]).toEqual('[' + gray(time) + '] ');
+    expect(stderrSpy.args[1][0]).toEqual('something 0.1 {"key":"value"}\n');
 
     done();
   });
@@ -153,15 +190,19 @@ describe('log.warn()', function() {
 describe('log.error()', function() {
 
   beforeEach(function(done) {
-    stderrSpy.reset();
+    stderrSpy.resetHistory();
     done();
   });
 
   it('should work i guess', function(done) {
     log.error(1, 2, 3, 4, 'five');
     var time = timestamp('HH:mm:ss');
-    expect(stderrSpy.calls[0].arguments).toInclude('[' + gray(time) + '] ');
-    expect(stderrSpy.calls[1].arguments).toInclude('1 2 3 4 \'five\'\n');
+    expect(stderrSpy.args[0][0]).toEqual('[' + gray(time) + '] ');
+    if (isLessThanNode12) {
+      expect(stderrSpy.args[1][0]).toEqual('1 2 3 4 \'five\'\n');
+    } else {
+      expect(stderrSpy.args[1][0]).toEqual('1 2 3 4 five\n');
+    }
 
     done();
   });
@@ -169,8 +210,8 @@ describe('log.error()', function() {
   it('should accept formatting', function(done) {
     log.error('%s %d %j', 'something', 0.1, { key: 'value' });
     var time = timestamp('HH:mm:ss');
-    expect(stderrSpy.calls[0].arguments).toInclude('[' + gray(time) + '] ');
-    expect(stderrSpy.calls[1].arguments).toInclude('something 0.1 {\"key\":\"value\"}\n');
+    expect(stderrSpy.args[0][0]).toEqual('[' + gray(time) + '] ');
+    expect(stderrSpy.args[1][0]).toEqual('something 0.1 {"key":"value"}\n');
 
     done();
   });
