@@ -1,8 +1,7 @@
 'use strict';
 
+var util = require('util');
 var Console = require('console').Console;
-var gray = require('ansi-gray');
-var timestamp = require('time-stamp');
 var supportsColor = require('color-support');
 
 var console = new Console({
@@ -15,24 +14,34 @@ function hasFlag(flag) {
   return process.argv.indexOf('--' + flag) !== -1;
 }
 
-function addColor(str) {
+function hasColors() {
   if (hasFlag('no-color')) {
-    return str;
+    return false;
   }
 
   if (hasFlag('color')) {
-    return gray(str);
+    return true;
   }
 
   if (supportsColor()) {
-    return gray(str);
+    return true;
   }
 
-  return str;
+  return false;
+}
+
+function Timestamp() {
+  this.now = new Date();
+}
+
+Timestamp.prototype[util.inspect.custom] = function (depth, opts) {
+  var timestamp = this.now.toLocaleTimeString('en', { hour12: false });
+  return '[' + opts.stylize(timestamp, 'date') + ']';
 }
 
 function getTimestamp() {
-  return '[' + addColor(timestamp('HH:mm:ss')) + ']';
+  var opts = { colors: hasColors() };
+  return util.formatWithOptions(opts, new Timestamp());
 }
 
 function log() {
