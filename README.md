@@ -39,7 +39,6 @@ current time in HH:MM:ss format.
 Logs the message as if you called `console.warn` but prefixes the output with the
 current time in HH:MM:ss format.
 
-
 ### `log.info(msg...)`
 
 Logs the message as if you called `console.info` but prefixes the output with the

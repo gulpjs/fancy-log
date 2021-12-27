@@ -12,7 +12,7 @@ var console = new Console({
 });
 
 function hasFlag(flag) {
-  return (process.argv.indexOf('--' + flag) !== -1);
+  return process.argv.indexOf('--' + flag) !== -1;
 }
 
 function addColor(str) {
