@@ -40,8 +40,7 @@ Timestamp.prototype[util.inspect.custom] = function (depth, opts) {
 }
 
 function getTimestamp() {
-  var opts = { colors: hasColors() };
-  return util.formatWithOptions(opts, new Timestamp());
+  return util.inspect(new Timestamp(), { colors: hasColors() });
 }
 
 function log() {
