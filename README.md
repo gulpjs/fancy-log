@@ -49,7 +49,7 @@ current time in HH:mm:ss format.
 Logs the message as if you called `console.dir` but prefixes the output with the
 current time in HH:mm:ss format.
 
-## Stying
+## Styling
 
 If the terminal that you are logging to supports colors, the timestamp will be formatted as though it were a `Date` being formatted by `util.inspect()`. This means that it will be formatted as magenta by default but can be adjusted following node's [Customizing util.inspect colors](https://nodejs.org/dist/latest-v10.x/docs/api/util.html#util_customizing_util_inspect_colors) documentation.
 
