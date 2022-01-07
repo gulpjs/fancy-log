@@ -56,7 +56,7 @@ If the terminal that you are logging to supports colors, the timestamp will be f
 For example, this will cause the logged timestamps (and other dates) to display in red:
 
 ```js
-var utils = require('utils');
+var util = require('util');
 
 util.inspect.styles.date = 'red';
 ```
