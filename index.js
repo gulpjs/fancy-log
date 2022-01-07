@@ -37,7 +37,7 @@ function Timestamp() {
 Timestamp.prototype[util.inspect.custom] = function (depth, opts) {
   var timestamp = this.now.toLocaleTimeString('en', { hour12: false });
   return '[' + opts.stylize(timestamp, 'date') + ']';
-}
+};
 
 function getTimestamp() {
   return util.inspect(new Timestamp(), { colors: hasColors() });
