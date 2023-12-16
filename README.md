@@ -71,7 +71,7 @@ MIT
 [npm-image]: https://img.shields.io/npm/v/fancy-log.svg?style=flat-square
 
 [ci-url]: https://github.com/gulpjs/fancy-log/actions?query=workflow:dev
-[ci-image]: https://img.shields.io/github/workflow/status/gulpjs/fancy-log/dev?style=flat-square
+[ci-image]: https://img.shields.io/github/actions/workflow/status/gulpjs/fancy-log/dev.yml?branch=master&style=flat-square
 
 [coveralls-url]: https://coveralls.io/r/gulpjs/fancy-log
 [coveralls-image]: https://img.shields.io/coveralls/gulpjs/fancy-log/master.svg?style=flat-square
