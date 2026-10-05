@@ -1,8 +1,8 @@
-'use strict';
+"use strict";
 
-var util = require('util');
-var Console = require('console').Console;
-var supportsColor = require('color-support');
+var util = require("util");
+var Console = require("console").Console;
+var supportsColor = require("color-support");
 
 var console = new Console({
   stdout: process.stdout,
@@ -11,15 +11,15 @@ var console = new Console({
 });
 
 function hasFlag(flag) {
-  return process.argv.indexOf('--' + flag) !== -1;
+  return process.argv.indexOf("--" + flag) !== -1;
 }
 
 function hasColors() {
-  if (hasFlag('no-color')) {
+  if (hasFlag("no-color")) {
     return false;
   }
 
-  if (hasFlag('color')) {
+  if (hasFlag("color")) {
     return true;
   }
 
@@ -35,8 +35,8 @@ function Timestamp() {
 }
 
 Timestamp.prototype[util.inspect.custom] = function (depth, opts) {
-  var timestamp = this.now.toLocaleTimeString('en', { hour12: false });
-  return '[' + opts.stylize(timestamp, 'date') + ']';
+  var timestamp = this.now.toLocaleTimeString("en", { hour12: false });
+  return "[" + opts.stylize(timestamp, "date") + "]";
 };
 
 function getTimestamp() {
@@ -45,35 +45,35 @@ function getTimestamp() {
 
 function log() {
   var time = getTimestamp();
-  process.stdout.write(time + ' ');
+  process.stdout.write(time + " ");
   console.log.apply(console, arguments);
   return this;
 }
 
 function info() {
   var time = getTimestamp();
-  process.stdout.write(time + ' ');
+  process.stdout.write(time + " ");
   console.info.apply(console, arguments);
   return this;
 }
 
 function dir() {
   var time = getTimestamp();
-  process.stdout.write(time + ' ');
+  process.stdout.write(time + " ");
   console.dir.apply(console, arguments);
   return this;
 }
 
 function warn() {
   var time = getTimestamp();
-  process.stderr.write(time + ' ');
+  process.stderr.write(time + " ");
   console.warn.apply(console, arguments);
   return this;
 }
 
 function error() {
   var time = getTimestamp();
-  process.stderr.write(time + ' ');
+  process.stderr.write(time + " ");
   console.error.apply(console, arguments);
   return this;
 }

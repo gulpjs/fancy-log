@@ -13,12 +13,12 @@ Log things, prefixed with a timestamp.
 ## Usage
 
 ```js
-var log = require('fancy-log');
+var log = require("fancy-log");
 
-log('a message');
+log("a message");
 // [16:27:02] a message
 
-log.error('oh no!');
+log.error("oh no!");
 // [16:27:02] oh no!
 ```
 
@@ -56,9 +56,9 @@ If the terminal that you are logging to supports colors, the timestamp will be f
 For example, this will cause the logged timestamps (and other dates) to display in red:
 
 ```js
-var util = require('util');
+var util = require("util");
 
-util.inspect.styles.date = 'red';
+util.inspect.styles.date = "red";
 ```
 
 ## Strict No LLM / No AI Policy
