@@ -18,7 +18,6 @@ var inspect = util.inspect;
 var expect = require("expect");
 var sinon = require("sinon");
 
-/* eslint-disable node/no-unsupported-features/es-syntax */
 // Reference: https://github.com/nodejs/node/blob/4e2ceba/lib/internal/util/inspect.js#L267-L274
 function stylizeWithColor(str, styleType) {
   const style = inspect.styles[styleType];
@@ -29,7 +28,6 @@ function stylizeWithColor(str, styleType) {
   }
   return str;
 }
-/* eslint-enable node/no-unsupported-features/es-syntax */
 
 function withColor(str) {
   return stylizeWithColor(str, "date");
