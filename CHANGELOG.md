@@ -1,5 +1,16 @@
 # Changelog
 
+## [3.0.0](https://github.com/gulpjs/fancy-log/compare/v2.0.0...v3.0.0) (2026-10-09)
+
+
+### ⚠ BREAKING CHANGES
+
+* Normalize repository, dropping Node <22.15.0 ([#28](https://github.com/gulpjs/fancy-log/issues/28))
+
+### Miscellaneous Chores
+
+* Normalize repository, dropping Node &lt;22.15.0 ([#28](https://github.com/gulpjs/fancy-log/issues/28)) ([19c69c1](https://github.com/gulpjs/fancy-log/commit/19c69c13fab55f69249c7f7ea7a9cdd49dbeacff))
+
 ## [2.0.0](https://www.github.com/gulpjs/fancy-log/compare/v1.3.3...v2.0.0) (2022-01-07)
 
 
