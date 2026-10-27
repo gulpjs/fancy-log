@@ -7,11 +7,6 @@ if (process.env.CI) {
   process.env.COLORTERM = true;
 }
 
-// Node.js >=v12 removes escaped quotes in inspect string by:
-// https://github.com/nodejs/node/pull/21624
-var nodeVersion = require("parse-node-version")(process.version);
-var isLessThanNode12 = nodeVersion.major < 12;
-
 var util = require("node:util");
 var inspect = util.inspect;
 
@@ -74,17 +69,7 @@ describe("log()", { timeout: 5000 }, function () {
   it("should work i guess", function () {
     log(1, 2, 3, 4, "five");
     expectCloseTo(stdoutSpy.mock.calls[0].arguments[0], true);
-    if (isLessThanNode12) {
-      assert.strictEqual(
-        stdoutSpy.mock.calls[1].arguments[0],
-        "1 2 3 4 'five'\n",
-      );
-    } else {
-      assert.strictEqual(
-        stdoutSpy.mock.calls[1].arguments[0],
-        "1 2 3 4 five\n",
-      );
-    }
+    assert.strictEqual(stdoutSpy.mock.calls[1].arguments[0], "1 2 3 4 five\n");
   });
 
   it("should accept formatting", function () {
@@ -101,18 +86,7 @@ describe("log()", { timeout: 5000 }, function () {
 
     log(1, 2, 3, 4, "five");
     expectCloseTo(stdoutSpy.mock.calls[0].arguments[0], false);
-    if (isLessThanNode12) {
-      assert.strictEqual(
-        stdoutSpy.mock.calls[1].arguments[0],
-        "1 2 3 4 'five'\n",
-      );
-    } else {
-      assert.strictEqual(
-        stdoutSpy.mock.calls[1].arguments[0],
-        "1 2 3 4 five\n",
-      );
-    }
-
+    assert.strictEqual(stdoutSpy.mock.calls[1].arguments[0], "1 2 3 4 five\n");
     process.argv.pop();
   });
 
@@ -121,17 +95,7 @@ describe("log()", { timeout: 5000 }, function () {
 
     log(1, 2, 3, 4, "five");
     expectCloseTo(stdoutSpy.mock.calls[0].arguments[0], true);
-    if (isLessThanNode12) {
-      assert.strictEqual(
-        stdoutSpy.mock.calls[1].arguments[0],
-        "1 2 3 4 'five'\n",
-      );
-    } else {
-      assert.strictEqual(
-        stdoutSpy.mock.calls[1].arguments[0],
-        "1 2 3 4 five\n",
-      );
-    }
+    assert.strictEqual(stdoutSpy.mock.calls[1].arguments[0], "1 2 3 4 five\n");
 
     process.argv.pop();
   });
@@ -142,17 +106,7 @@ describe("log()", { timeout: 5000 }, function () {
 
     log(1, 2, 3, 4, "five");
     expectCloseTo(stdoutSpy.mock.calls[0].arguments[0], false);
-    if (isLessThanNode12) {
-      assert.strictEqual(
-        stdoutSpy.mock.calls[1].arguments[0],
-        "1 2 3 4 'five'\n",
-      );
-    } else {
-      assert.strictEqual(
-        stdoutSpy.mock.calls[1].arguments[0],
-        "1 2 3 4 five\n",
-      );
-    }
+    assert.strictEqual(stdoutSpy.mock.calls[1].arguments[0], "1 2 3 4 five\n");
 
     process.env.TERM = term;
     process.env.COLORTERM = colorterm;
@@ -168,17 +122,7 @@ describe("log.info()", function () {
   it("should work i guess", function () {
     log.info(1, 2, 3, 4, "five");
     expectCloseTo(stdoutSpy.mock.calls[0].arguments[0], true);
-    if (isLessThanNode12) {
-      assert.strictEqual(
-        stdoutSpy.mock.calls[1].arguments[0],
-        "1 2 3 4 'five'\n",
-      );
-    } else {
-      assert.strictEqual(
-        stdoutSpy.mock.calls[1].arguments[0],
-        "1 2 3 4 five\n",
-      );
-    }
+    assert.strictEqual(stdoutSpy.mock.calls[1].arguments[0], "1 2 3 4 five\n");
   });
 
   it("should accept formatting", function () {
@@ -216,17 +160,7 @@ describe("log.warn()", function () {
   it("should work i guess", function () {
     log.warn(1, 2, 3, 4, "five");
     expectCloseTo(stderrSpy.mock.calls[0].arguments[0], true);
-    if (isLessThanNode12) {
-      assert.strictEqual(
-        stderrSpy.mock.calls[1].arguments[0],
-        "1 2 3 4 'five'\n",
-      );
-    } else {
-      assert.strictEqual(
-        stderrSpy.mock.calls[1].arguments[0],
-        "1 2 3 4 five\n",
-      );
-    }
+    assert.strictEqual(stderrSpy.mock.calls[1].arguments[0], "1 2 3 4 five\n");
   });
 
   it("should accept formatting", function () {
@@ -249,17 +183,7 @@ describe("log.error()", function () {
   it("should work i guess", function () {
     log.error(1, 2, 3, 4, "five");
     expectCloseTo(stdoutSpy.mock.calls[0].arguments[0], true);
-    if (isLessThanNode12) {
-      assert.strictEqual(
-        stderrSpy.mock.calls[1].arguments[0],
-        "1 2 3 4 'five'\n",
-      );
-    } else {
-      assert.strictEqual(
-        stderrSpy.mock.calls[1].arguments[0],
-        "1 2 3 4 five\n",
-      );
-    }
+    assert.strictEqual(stderrSpy.mock.calls[1].arguments[0], "1 2 3 4 five\n");
   });
 
   it("should accept formatting", function () {
