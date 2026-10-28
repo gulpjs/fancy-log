@@ -7,16 +7,11 @@ if (process.env.CI) {
   process.env.COLORTERM = true;
 }
 
-// Node.js >=v12 removes escaped quotes in inspect string by:
-// https://github.com/nodejs/node/pull/21624
-var nodeVersion = require("parse-node-version")(process.version);
-var isLessThanNode12 = nodeVersion.major < 12;
-
-var util = require("util");
+var util = require("node:util");
 var inspect = util.inspect;
 
-var expect = require("expect");
-var sinon = require("sinon");
+var assert = require("node:assert");
+var { describe, it } = require("node:test");
 
 // Reference: https://github.com/nodejs/node/blob/4e2ceba/lib/internal/util/inspect.js#L267-L274
 function stylizeWithColor(str, styleType) {
@@ -35,9 +30,6 @@ function withColor(str) {
 
 var log = require("../");
 
-var stdoutSpy = sinon.spy(process.stdout, "write");
-var stderrSpy = sinon.spy(process.stderr, "write");
-
 function expectCloseTo(arg, needsColor) {
   var now = new Date();
   var time;
@@ -46,9 +38,9 @@ function expectCloseTo(arg, needsColor) {
     try {
       time = now.toLocaleTimeString("en", { hour12: false });
       if (needsColor) {
-        expect(arg).toEqual("[" + withColor(time) + "] ");
+        assert.strictEqual(arg, "[" + withColor(time) + "] ");
       } else {
-        expect(arg).toEqual("[" + time + "] ");
+        assert.strictEqual(arg, "[" + time + "] ");
       }
       // Return on a success
       return;
@@ -62,180 +54,135 @@ function expectCloseTo(arg, needsColor) {
   }
 }
 
-describe("log()", function () {
-  this.timeout(5000);
-
+describe("log()", { timeout: 5000 }, function () {
   var term = process.env.TERM;
   var colorterm = process.env.COLORTERM;
 
-  beforeEach(function (done) {
-    stdoutSpy.resetHistory();
-    done();
-  });
+  it("should work i guess", function (t) {
+    var stdoutSpy = t.mock.method(process.stdout, "write", () => null);
 
-  it("should work i guess", function (done) {
     log(1, 2, 3, 4, "five");
-    expectCloseTo(stdoutSpy.args[0][0], true);
-    if (isLessThanNode12) {
-      expect(stdoutSpy.args[1][0]).toEqual("1 2 3 4 'five'\n");
-    } else {
-      expect(stdoutSpy.args[1][0]).toEqual("1 2 3 4 five\n");
-    }
-
-    done();
+    expectCloseTo(stdoutSpy.mock.calls[0].arguments[0], true);
+    assert.strictEqual(stdoutSpy.mock.calls[1].arguments[0], "1 2 3 4 five\n");
   });
 
-  it("should accept formatting", function (done) {
+  it("should accept formatting", function (t) {
+    var stdoutSpy = t.mock.method(process.stdout, "write", () => null);
     log("%s %d %j", "something", 0.1, { key: "value" });
-    expectCloseTo(stdoutSpy.args[0][0], true);
-    expect(stdoutSpy.args[1][0]).toEqual('something 0.1 {"key":"value"}\n');
-
-    done();
+    expectCloseTo(stdoutSpy.mock.calls[0].arguments[0], true);
+    assert.strictEqual(
+      stdoutSpy.mock.calls[1].arguments[0],
+      'something 0.1 {"key":"value"}\n',
+    );
   });
 
-  it("does not add color if argv contains --no-color", function (done) {
+  it("does not add color if argv contains --no-color", function (t) {
     process.argv.push("--no-color");
+    var stdoutSpy = t.mock.method(process.stdout, "write", () => null);
 
     log(1, 2, 3, 4, "five");
-    expectCloseTo(stdoutSpy.args[0][0], false);
-    if (isLessThanNode12) {
-      expect(stdoutSpy.args[1][0]).toEqual("1 2 3 4 'five'\n");
-    } else {
-      expect(stdoutSpy.args[1][0]).toEqual("1 2 3 4 five\n");
-    }
-
+    expectCloseTo(stdoutSpy.mock.calls[0].arguments[0], false);
+    assert.strictEqual(stdoutSpy.mock.calls[1].arguments[0], "1 2 3 4 five\n");
     process.argv.pop();
-
-    done();
   });
 
-  it("adds color if argv contains --color", function (done) {
+  it("adds color if argv contains --color", function (t) {
     process.argv.push("--color");
+    var stdoutSpy = t.mock.method(process.stdout, "write", () => null);
 
     log(1, 2, 3, 4, "five");
-    expectCloseTo(stdoutSpy.args[0][0], true);
-    if (isLessThanNode12) {
-      expect(stdoutSpy.args[1][0]).toEqual("1 2 3 4 'five'\n");
-    } else {
-      expect(stdoutSpy.args[1][0]).toEqual("1 2 3 4 five\n");
-    }
+    expectCloseTo(stdoutSpy.mock.calls[0].arguments[0], true);
+    assert.strictEqual(stdoutSpy.mock.calls[1].arguments[0], "1 2 3 4 five\n");
 
     process.argv.pop();
-
-    done();
   });
 
-  it("does not add color if no support", function (done) {
+  it("does not add color if no support", function (t) {
     process.env.TERM = "dumb";
     delete process.env.COLORTERM;
+    var stdoutSpy = t.mock.method(process.stdout, "write", () => null);
 
     log(1, 2, 3, 4, "five");
-    expectCloseTo(stdoutSpy.args[0][0], false);
-    if (isLessThanNode12) {
-      expect(stdoutSpy.args[1][0]).toEqual("1 2 3 4 'five'\n");
-    } else {
-      expect(stdoutSpy.args[1][0]).toEqual("1 2 3 4 five\n");
-    }
+    expectCloseTo(stdoutSpy.mock.calls[0].arguments[0], false);
+    assert.strictEqual(stdoutSpy.mock.calls[1].arguments[0], "1 2 3 4 five\n");
 
     process.env.TERM = term;
     process.env.COLORTERM = colorterm;
-
-    done();
   });
 });
 
 describe("log.info()", function () {
-  beforeEach(function (done) {
-    stdoutSpy.resetHistory();
-    done();
-  });
+  it("should work i guess", function (t) {
+    var stdoutSpy = t.mock.method(process.stdout, "write", () => null);
 
-  it("should work i guess", function (done) {
     log.info(1, 2, 3, 4, "five");
-    expectCloseTo(stdoutSpy.args[0][0], true);
-    if (isLessThanNode12) {
-      expect(stdoutSpy.args[1][0]).toEqual("1 2 3 4 'five'\n");
-    } else {
-      expect(stdoutSpy.args[1][0]).toEqual("1 2 3 4 five\n");
-    }
-
-    done();
+    expectCloseTo(stdoutSpy.mock.calls[0].arguments[0], true);
+    assert.strictEqual(stdoutSpy.mock.calls[1].arguments[0], "1 2 3 4 five\n");
   });
 
-  it("should accept formatting", function (done) {
-    log.info("%s %d %j", "something", 0.1, { key: "value" });
-    expectCloseTo(stdoutSpy.args[0][0], true);
-    expect(stdoutSpy.args[1][0]).toEqual('something 0.1 {"key":"value"}\n');
+  it("should accept formatting", function (t) {
+    var stdoutSpy = t.mock.method(process.stdout, "write", () => null);
 
-    done();
+    log.info("%s %d %j", "something", 0.1, { key: "value" });
+    expectCloseTo(stdoutSpy.mock.calls[0].arguments[0], true);
+    assert.strictEqual(
+      stdoutSpy.mock.calls[1].arguments[0],
+      'something 0.1 {"key":"value"}\n',
+    );
   });
 });
 
 describe("log.dir()", function () {
-  beforeEach(function (done) {
-    stdoutSpy.resetHistory();
-    done();
-  });
+  it("should format an object with util.inspect", function (t) {
+    var stdoutSpy = t.mock.method(process.stdout, "write", () => {});
 
-  it("should format an object with util.inspect", function (done) {
     log.dir({ key: "value" });
-    expectCloseTo(stdoutSpy.args[0][0], true);
-    expect(stdoutSpy.args[1][0]).toEqual(util.inspect({ key: "value" }) + "\n");
-
-    done();
+    expectCloseTo(stdoutSpy.mock.calls[0].arguments[0], true);
+    assert.strictEqual(
+      stdoutSpy.mock.calls[1].arguments[0],
+      util.inspect({ key: "value" }) + "\n",
+    );
   });
 });
 
 describe("log.warn()", function () {
-  beforeEach(function (done) {
-    stderrSpy.resetHistory();
-    done();
-  });
+  it("should work i guess", function (t) {
+    var stderrSpy = t.mock.method(process.stderr, "write", () => null);
 
-  it("should work i guess", function (done) {
     log.warn(1, 2, 3, 4, "five");
-    expectCloseTo(stdoutSpy.args[0][0], true);
-    if (isLessThanNode12) {
-      expect(stderrSpy.args[1][0]).toEqual("1 2 3 4 'five'\n");
-    } else {
-      expect(stderrSpy.args[1][0]).toEqual("1 2 3 4 five\n");
-    }
-
-    done();
+    expectCloseTo(stderrSpy.mock.calls[0].arguments[0], true);
+    assert.strictEqual(stderrSpy.mock.calls[1].arguments[0], "1 2 3 4 five\n");
   });
 
-  it("should accept formatting", function (done) {
-    log.warn("%s %d %j", "something", 0.1, { key: "value" });
-    expectCloseTo(stdoutSpy.args[0][0], true);
-    expect(stderrSpy.args[1][0]).toEqual('something 0.1 {"key":"value"}\n');
+  it("should accept formatting", function (t) {
+    var stderrSpy = t.mock.method(process.stderr, "write", () => null);
 
-    done();
+    log.warn("%s %d %j", "something", 0.1, { key: "value" });
+    expectCloseTo(stderrSpy.mock.calls[0].arguments[0], true);
+    assert.strictEqual(
+      stderrSpy.mock.calls[1].arguments[0],
+      'something 0.1 {"key":"value"}\n',
+    );
   });
 });
 
 describe("log.error()", function () {
-  beforeEach(function (done) {
-    stderrSpy.resetHistory();
-    done();
-  });
+  it("should work i guess", function (t) {
+    var stderrSpy = t.mock.method(process.stderr, "write", () => null);
 
-  it("should work i guess", function (done) {
     log.error(1, 2, 3, 4, "five");
-    expectCloseTo(stdoutSpy.args[0][0], true);
-    if (isLessThanNode12) {
-      expect(stderrSpy.args[1][0]).toEqual("1 2 3 4 'five'\n");
-    } else {
-      expect(stderrSpy.args[1][0]).toEqual("1 2 3 4 five\n");
-    }
-
-    done();
+    expectCloseTo(stderrSpy.mock.calls[0].arguments[0], true);
+    assert.strictEqual(stderrSpy.mock.calls[1].arguments[0], "1 2 3 4 five\n");
   });
 
-  it("should accept formatting", function (done) {
-    log.error("%s %d %j", "something", 0.1, { key: "value" });
-    expectCloseTo(stdoutSpy.args[0][0], true);
-    expect(stderrSpy.args[1][0]).toEqual('something 0.1 {"key":"value"}\n');
+  it("should accept formatting", function (t) {
+    var stderrSpy = t.mock.method(process.stderr, "write", () => null);
 
-    done();
+    log.error("%s %d %j", "something", 0.1, { key: "value" });
+    expectCloseTo(stderrSpy.mock.calls[0].arguments[0], true);
+    assert.strictEqual(
+      stderrSpy.mock.calls[1].arguments[0],
+      'something 0.1 {"key":"value"}\n',
+    );
   });
 });
